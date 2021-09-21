@@ -42,4 +42,11 @@ class UserFoodController extends Controller
         ]);
         return $response->json();
     }
+
+    public function mostConsumed(int $userId)
+    {
+        $response = Http::get("{$this->privateApiUrl}/users/{$userId}/reports/most-consumed-nutrient");
+        return $response->json();
+    }
+    
 }

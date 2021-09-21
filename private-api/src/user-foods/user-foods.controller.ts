@@ -48,4 +48,9 @@ export class UserFoodsController {
   ) {
     await this.userFoodsService.deleteFood(userId, foodId);
   }
+
+  @Get(':foodId')
+  async mostConsumed(@Param('userId') userId: number) {
+    return await this.userFoodsService.mostConsumed(userId);
+  }
 }

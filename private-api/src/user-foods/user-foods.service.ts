@@ -41,4 +41,31 @@ export class UserFoodsService {
       ...addUserFoodDto,
     });
   }
+  mostConsumed(userId: number) {
+    
+    const query = this.userFoodsRepository.createQueryBuilder('user_foods') 
+    .leftJoinAndSelect('user_foods.user_id','users')
+    .leftJoinAndSelect('user_foods.food_id','food_nutrients')
+    .leftJoinAndSelect('food_nutrients.nutrient_id','nutrients')
+    .where('user_foods.user_id = :user_id', { user_id: userId })
+    .select('user_foods.*, nutrients.id as nutrient_id, nutrients.name as name, nutrients.unit_name as unitName')
+    .getMany();
+
+    const result = query.execute();
+    let max = 0;
+    for(const r1 of result){
+      const userF = this.userFoodsRepository.createQueryBuilder("user_foods")
+      .where("food_id = "+r1.food_id+" AND user_id = "+userId)
+      .getOne();
+      const getN = r1.amount_per_serving * userF.servings_per_week;
+      if(max < getN){
+          max = getN;
+          let result = {id:r1.nutrient_id, 
+                        name:r1.name, 
+                        unitName:r1.unitName, 
+                        weeklyAmount:max};
+      }
+    }
+    return result;
+  }
 }
