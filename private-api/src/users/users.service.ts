@@ -24,7 +24,14 @@ export class UsersService {
   }
 
   findOne(id: number) {
-    return this.usersRepository.findOneOrFail(id);
+    let userInfo = this.usersRepository.findOneOrFail(id);
+    if(!userInfo){
+      return `User ID #${id} not found!`;
+    }
+    else{
+      return userInfo;
+    }
+     
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
